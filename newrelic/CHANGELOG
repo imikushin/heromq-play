@@ -1,6 +1,195 @@
 CHANGELOG
 =========
 
+v3.4.2
+------
+
+* Fix: Solr caches and Solr updates data not appearing
+
+  Starting with version 3.4.1, Solr caches and updates were not appearing in 
+  the UI. This bug has been fixed.
+  
+* Fix: JVM tab thread pool, session and transaction data not appearing
+
+  Starting with version 3.4.1, some data was not appearing under the JVM tab.
+  This bug has been fixed.
+
+v3.4.1
+------
+
+* Fix: In some cases, Play 2.2 didn't report transactions
+
+  When a chain of promises resolved, specifically using Future.flatMap(),
+  lingering promises prevented the transaction from completing, in which
+  case the transaction wouldn't be reported for the app. This is now
+  tracked correctly.
+
+* Fix: Improved performance when instrumented code is not running in a transaction
+
+  Avoids unnecessary work when code instrumented by the Java agent is not
+  running in the scope of a transaction.
+
+
+v3.4.0
+------
+
+* Fix: Java agent should honor enable_auto_app_naming
+ 
+  Starting with Java agent 3.3.1, the enable_auto_app_naming flag was being 
+  ignored. This bug has been fixed.
+ 
+* Fix: Setting configuration properties in newrelic.yml configuration file.
+ 
+  Starting with version 3.0, some properties such as max_stack_trace_lines
+  could not be set in the newrelic.yml configuration property. This bug has
+  been fixed.
+
+* Fix: Java agent should honor JAX-RS annotations with New Relic annotations
+ 
+  New Relic's Java agent should handle methods that contain a New Relic
+  annotation along with a JAX-RS annotation correctly. Previously the New
+  Relic annotation was being ignored.
+ 
+* Fix: Play transaction does not complete until timeout expires
+ 
+  New Relic's Java agent now handles firstCompletedOf to Futures 
+  correctly.
+ 
+* Additional functionality to API call addCustomParameter
+
+  New Relic's API call addCustomParameter will now add the custom
+  parameters to the system codenamed Rubicon. For more information, see
+
+    http://newrelic.com/software-analytics
+
+
+v3.3.2
+------
+
+* Fix: Duplicate annotation exception
+
+  In some rare cases involving generated a proxy class, the application may
+  encounter an exception
+  
+    AnnotationFormatError: Duplicate annotation for class
+    
+  That bug has been fixed in this version.
+  
+* Fix: VerifyError
+
+  In certain cases such as the Wildfly app server, the application may
+  encounter a VerifyError. That bug has been fixed in this version.
+  
+v3.3.1
+------
+
+* JMS Messaging
+
+  New Relic now gives you insight into the performance of your JMS message
+  processing, both incoming and outgoing messages.
+
+  New Relic now shows transactions initiated via JMS 1.1 message receipt.
+  These transactions show up in the New Relic UI as background tasks of type
+  "Message". In addition, JMS 1.1 message creation is shown in transaction
+  traces.
+
+* Grails 1.3.7 to 2.3.x
+
+  New Relic now provides first-class visibility into your Grails
+  applications. Grails web transactions are now named based on the Grails
+  controller. The transactions track the details of your calls to JDBC,
+  Hibernate, and other important frameworks, and provides full access to
+  the New Relic Java agent API from Groovy.
+  
+* Updated instrumentation for supported app servers
+
+  New Relic has updated the instrumentation of the application servers
+  we support. In the process, we have updated the list of app
+  servers that we instrument. For a current list of supported app server
+  versions, see https://docs.newrelic.com/docs/java/new-relic-for-java
+
+* Fix: New Relic did not instrument Apache HttpClient 4.3
+
+  Previous versions of the agent did not instrument HttpClient 4.3.x.
+  That version is now properly supported.
+  
+* Fix: Java Agent failed on Weblogic with a certicate exception
+
+  In some cases running Weblogic, the Java Agent would fail certificate
+  validation when connecting to New Relic. That bug has been fixed.
+  
+* Fix: Java Agent suppressed application logging
+
+  In version 3.2.3, the Java agent sometimes suppressed application
+  logging. That bug has been fixed in this version.
+  
+* Fix: Java Agent was logging error messages regarding "weaved classes"
+
+  In version 3.2, the Java agent wrote innocuous error messages to its log
+  similar to the following:
+  
+    ERROR: javax/servlet/ServletOutputStream is marked as a weaved class,
+    but no methods are matched to be weaved.
+    
+  That bug has been fixed in this version.
+
+* Fix: Text instructions in the sample newrelic.yml file were improved
+
+  If you are upgrading from a previous version of the agent, consider
+  applying your configuration to this new version of the yml file.
+
+v3.2.3
+------
+
+* Fix: JBoss 7 fails to start with Java 1.6
+
+  Starting with version 3.2.0 of the Java agent, JBoss 7 application servers
+  fail to start when running Java 1.6. An IllegalStateException is printed to 
+  System.out. This bug has been fixed.
+
+v3.2.2
+------
+
+* Fix: Play 2.2 instrumentation in action methods
+
+  In version 3.2.0 and 3.2.1, the Java agent failed to instrument calls present
+  in a controller's action method. This means database calls, external calls,
+  and custom instrumented calls within the action method were not being reported
+  to New Relic. This bug has been fixed.
+  
+* Fix: Invalid exclusive time Errors with Play 2.2
+
+  In version 3.2.0 and 3.2.1, the Java agent sometimes reported error messages
+  to the newrelic log indicating an "Invalid exclusive time". This error
+  has been fixed.
+
+* Fix: Inaccurate async wait time with Play 2.x 
+
+  In version 3.2.0 and 3.2.1, the Java agent reported an async wait time for
+  Play 2.x transactions that was too large. This bug has been fixed.
+
+v3.2.1
+------
+
+* Fix: Exceptions thrown from conflicting JAXB versions
+
+  The New Relic Java agent now supports customers using any JAXB or Xerces 
+  version. This bug was introduced in version 3.1.0.
+
+* Fix: Usage of the newrelic.bootstrap_classpath system property
+
+  In version 3.2.0, the newrelic.bootstrap_classpath system property caused
+  an IllegalAccessError. That bug has been fixed. Note also that this system
+  property has been deprecated and should not be used.
+
+* Fix: Data collection for customers using the IBM JVM without WebSphere
+
+  New Relic now supports customers using an IBM JVM without running 
+  WebSphere. In this scenario, you must set the sync_startup flag set to
+  true in the common section of their newrelic.yml.
+  
+  sync_startup: true
+
 v3.2.0
 ------
 
