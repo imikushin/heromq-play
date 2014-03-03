@@ -4,6 +4,7 @@ import grizzled.slf4j.Logging
 import java.nio.charset.Charset
 import play.api.libs.iteratee._
 import play.api.mvc._
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.reflectiveCalls
 
 case class Chunk(topic: String, payload: String)
@@ -21,11 +22,12 @@ object API extends Controller with Logging {
 
   def filter(topic: String) = Enumeratee.filter[Chunk] {_.topic == topic}
 
-  def payload = Enumeratee.map[Chunk] {_.payload}
+  def payload = Enumeratee.map[Chunk] {c => debug(s"${c.topic} : ${c.payload}"); c.payload}
 
   def sub(topic: String) = Action {req =>
-    debug(req.remoteAddress + " - client connected")
-    Ok.stream(enumerator &> filter(topic) &> payload &> Concurrent.buffer(50))
+    debug(req.remoteAddress + " - client connected, topic: " + topic)
+    val enStream: Enumerator[String] = enumerator &> filter(topic) &> payload &> Concurrent.buffer(50)
+    Ok.chunked(enStream)
   }
 
 }
